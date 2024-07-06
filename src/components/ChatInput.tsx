@@ -3,6 +3,9 @@
 import { HTMLAttributes, FC, useState } from "react";
 import { cn } from "@/lib/utils";
 import TextAreaAutoSize from "react-textarea-autosize";
+import { useMutation } from "@tanstack/react-query";
+import { nanoid } from "nanoid";
+import { Message } from "@/lib/validators/message";
 
 //extends HTMLAttrtibutes<HTMLDivElement> allows all the html attributes that are applicable
 //to <div> to be passed as props.Here for example <ChatInput /> component can recieve any
@@ -13,6 +16,22 @@ interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [inputText, setInputText] = useState<string>("");
 
+  const { mutate: sendMessage } = useMutation({
+    mutationFn: async (message: Message) => {
+      const response = await fetch("/api/message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: "hello" }),
+      });
+      return response.body;
+    },
+    onSuccess: () => {
+      console.log("Success");
+    },
+  });
+
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       {/* cn is used to combine the existing 
@@ -22,6 +41,17 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           rows={2}
           maxRows={4}
           value={inputText}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              const message: Message = {
+                id: nanoid(),
+                isUserMessage: true,
+                text: inputText,
+              };
+              sendMessage(message);
+            }
+          }}
           onChange={(e) => setInputText(e.target.value)}
           autoFocus // user don't need manually click on inputarea to place the cursor
           placeholder="Write a message..."
