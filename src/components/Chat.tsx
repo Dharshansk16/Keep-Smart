@@ -1,5 +1,11 @@
 import { FC } from "react";
-import { Accordion, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./ui/accordion";
+import ChatHeader from "./ChatHeader";
 
 const Chat: FC = () => {
   return (
@@ -12,8 +18,11 @@ const Chat: FC = () => {
         <div className="fixed right-8 w-80 bottom-8 bg-white border border-gray-200 overflow:hidden">
           <div className="w-full h-full flex flex-col">
             <AccordionTrigger className="px-6 border-b  border-zinc-300">
-              smart AI
+              <ChatHeader />
             </AccordionTrigger>
+            <AccordionContent>
+              <div className="flex flex-col h-80">messages chatinput</div>
+            </AccordionContent>
           </div>
         </div>
       </AccordionItem>
