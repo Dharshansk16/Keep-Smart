@@ -1,6 +1,6 @@
 "use client";
 
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes, FC, useState } from "react";
 import { cn } from "@/lib/utils";
 import TextAreaAutoSize from "react-textarea-autosize";
 
@@ -10,16 +10,19 @@ import TextAreaAutoSize from "react-textarea-autosize";
 
 interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
-const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => {
+const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
+  const [inputText, setInputText] = useState<string>("");
+
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
-      {" "}
       {/* cn is used to combine the existing 
     className with the className passed as props */}
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">
         <TextAreaAutoSize
           rows={2}
           maxRows={4}
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
           autoFocus // user don't need manually click on inputarea to place the cursor
           placeholder="Write a message..."
           className="peer disabled:opacity-50 pr-14 resize-none block placeholder:pl-1 
